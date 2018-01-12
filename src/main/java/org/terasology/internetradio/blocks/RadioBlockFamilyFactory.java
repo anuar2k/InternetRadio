@@ -20,7 +20,6 @@ import java.util.Set;
 
 @RegisterBlockFamilyFactory("radio")
 public class RadioBlockFamilyFactory implements BlockFamilyFactory {
-    private static final Logger logger = LoggerFactory.getLogger(RadioBlockFamilyFactory.class);
     private static final ImmutableSet<String> NAMES = ImmutableSet.of("on", "off");
 
     @Override
@@ -33,12 +32,6 @@ public class RadioBlockFamilyFactory implements BlockFamilyFactory {
             createBlock(blocks, definition, blockBuilder, "on", side, rot);
         }
 
-        for (Map.Entry<String, Block> entry : blocks.entrySet()) {
-            logger.info("TAK O: {} | {}", entry.getKey(), entry.getValue().getURI().toString());
-        }
-
-        logger.info(String.valueOf(blocks.size()));
-
         return new RadioBlockFamily(new BlockUri(definition.getUrn()), blocks.get("off;FRONT"), blocks, definition.getCategories());
     }
 
@@ -50,8 +43,8 @@ public class RadioBlockFamilyFactory implements BlockFamilyFactory {
         blocks.put(name, newBlock);
     }
 
-    //@Override
-    //public Set<String> getSectionNames() {
-    //    return NAMES;
-    //}
+    @Override
+    public Set<String> getSectionNames() {
+        return NAMES;
+    }
 }

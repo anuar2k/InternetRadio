@@ -4,6 +4,7 @@
         "all": "radio_side",
         "front": "radio_off"
     },
+    "luminance": 0,
     "entity": {
         "prefab": "InternetRadio:radio"
     },
@@ -13,12 +14,14 @@
         "tiles": {
             "all": "radio_side",
             "front": "radio_off"
-        }
+        },
+        "luminance": 0
     },
     "on": {
         "tiles": {
             "all": "radio_side",
             "front": "radio_on"
-        }
+        },
+        "luminance": 5
     }
 }

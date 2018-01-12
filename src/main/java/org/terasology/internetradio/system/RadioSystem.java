@@ -15,27 +15,27 @@ import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockComponent;
+import org.terasology.world.block.family.BlockFamily;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class RadioSystem extends BaseComponentSystem {
-    private static final Logger logger = LoggerFactory.getLogger(RadioSystem.class);
+
     @In
     WorldProvider worldProvider;
-    @In
-    BlockEntityRegistry blockEntityRegistry;
 
-    @ReceiveEvent
-    public void onActivate(ActivateEvent event, EntityRef entity) {
-        BlockComponent bComp = entity.getComponent(BlockComponent.class);
-        if (bComp == null) {
-            return;
-        }
+    @ReceiveEvent(components = {RadioComponent.class, BlockComponent.class})
+    public void onActivate(ActivateEvent event, EntityRef entity, BlockComponent bComp) {
         Block block = bComp.getBlock();
         if (block == null) {
             return;
         }
-
-        logger.info(block.getBlockFamily().getDisplayName());
-        logger.info(block.getBlockFamily().getClass().toString());
+        BlockFamily blockFamily = block.getBlockFamily();
+        if (blockFamily == null) {
+            return;
+        }
+        if (blockFamily instanceof RadioBlockFamily) {
+            block = ((RadioBlockFamily) blockFamily).getBlockForStateSwitch(block);
+            worldProvider.setBlock(bComp.getPosition(), block);
+        }
     }
 }
