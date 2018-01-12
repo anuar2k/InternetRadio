@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.math.Rotation;
 import org.terasology.math.Side;
+import org.terasology.naming.Name;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockBuilderHelper;
 import org.terasology.world.block.BlockUri;
@@ -49,6 +50,7 @@ public class RadioBlockFamilyFactory implements BlockFamilyFactory {
     private void createBlock(HashMap<String, Block> blocks, BlockFamilyDefinition definition, BlockBuilderHelper helper, boolean state, Side side) {
         String section = String.valueOf(state)+';'+side.toString();
         Block newBlock = helper.constructSimpleBlock(definition, section);
+        newBlock.setUri(new BlockUri(definition.getUrn(), new Name(section)));
         blocks.put(section, newBlock);
     }
 
