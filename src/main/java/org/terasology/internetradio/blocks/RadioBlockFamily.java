@@ -8,45 +8,32 @@ import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockUri;
-import org.terasology.world.block.family.BlockFamily;
+import org.terasology.world.block.family.AbstractBlockFamily;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RadioBlockFamily implements BlockFamily {
+public class RadioBlockFamily extends AbstractBlockFamily {
     private static final Logger logger = LoggerFactory.getLogger(RadioBlockFamily.class);
-    private BlockUri blockUri;
-    private List<String> categories;
     private Block archetypeBlock;
     private Map<String, Block> blocks;
 
     public RadioBlockFamily(BlockUri familyUri, Block archetypeBlock, HashMap<String, Block> blocks, List<String> categories) {
-        this.blockUri = familyUri;
-        this.categories = categories;
+        super(familyUri, categories);
         this.archetypeBlock = archetypeBlock;
         this.blocks = blocks;
-    }
-
-    @Override
-    public BlockUri getURI() {
-        return blockUri;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return blockUri.toString();
     }
 
     @Override
     public Block getBlockForPlacement(WorldProvider worldProvider, BlockEntityRegistry blockEntityRegistry, Vector3i location, Side attachmentSide, Side direction) {
         if (attachmentSide.isHorizontal()) {
             logger.info(attachmentSide.toString());
-            return blocks.get("false;"+attachmentSide);
+            return blocks.get("off;"+attachmentSide);
         }
         if (direction != null) {
             logger.info(direction.toString());
-            return blocks.get("false;"+direction);
+            return blocks.get("off;"+direction);
         } else {
             logger.info("archetype");
             return getArchetypeBlock();
@@ -66,15 +53,5 @@ public class RadioBlockFamily implements BlockFamily {
     @Override
     public Iterable<Block> getBlocks() {
         return blocks.values();
-    }
-
-    @Override
-    public Iterable<String> getCategories() {
-        return categories;
-    }
-
-    @Override
-    public boolean hasCategory(String category) {
-        return categories.indexOf(category) != -1;
     }
 }

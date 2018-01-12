@@ -15,47 +15,43 @@ import org.terasology.world.block.family.RegisterBlockFamilyFactory;
 import org.terasology.world.block.loader.BlockFamilyDefinition;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @RegisterBlockFamilyFactory("radio")
 public class RadioBlockFamilyFactory implements BlockFamilyFactory {
     private static final Logger logger = LoggerFactory.getLogger(RadioBlockFamilyFactory.class);
-    private static final ImmutableSet<String> NAMES = ImmutableSet.of(
-            "false;FRONT",
-            "false;RIGHT",
-            "false;BACK",
-            "false;LEFT",
-            "true;FRONT",
-            "true;RIGHT",
-            "true;BACK",
-            "true;LEFT"
-    );
+    private static final ImmutableSet<String> NAMES = ImmutableSet.of("on", "off");
 
     @Override
     public BlockFamily createBlockFamily(BlockFamilyDefinition definition, BlockBuilderHelper blockBuilder) {
         HashMap<String, Block> blocks = new HashMap<>();
 
-        for (Side side : Side.horizontalSides()) {
-            createBlock(blocks, definition, blockBuilder, false, side);
-            createBlock(blocks, definition, blockBuilder, true, side);
-            logger.info(side.toString());
+        for (Rotation rot : Rotation.horizontalRotations()) {
+            Side side = rot.rotate(Side.FRONT);
+            createBlock(blocks, definition, blockBuilder, "off", side, rot);
+            createBlock(blocks, definition, blockBuilder, "on", side, rot);
         }
 
-        logger.info(String.valueOf(blocks.get("false;FRONT") == null));
+        for (Map.Entry<String, Block> entry : blocks.entrySet()) {
+            logger.info("TAK O: {} | {}", entry.getKey(), entry.getValue().getURI().toString());
+        }
+
         logger.info(String.valueOf(blocks.size()));
 
-        return new RadioBlockFamily(new BlockUri(definition.getUrn()), blocks.get("false;FRONT"), blocks, definition.getCategories());
+        return new RadioBlockFamily(new BlockUri(definition.getUrn()), blocks.get("off;FRONT"), blocks, definition.getCategories());
     }
 
-    private void createBlock(HashMap<String, Block> blocks, BlockFamilyDefinition definition, BlockBuilderHelper helper, boolean state, Side side) {
-        String section = String.valueOf(state)+';'+side.toString();
-        Block newBlock = helper.constructSimpleBlock(definition, section);
-        newBlock.setUri(new BlockUri(definition.getUrn(), new Name(section)));
-        blocks.put(section, newBlock);
+    private void createBlock(HashMap<String, Block> blocks, BlockFamilyDefinition definition, BlockBuilderHelper helper, String section, Side side, Rotation rot) {
+        Block newBlock = helper.constructTransformedBlock(definition, section, rot);
+
+        String name = section+';'+side.toString();
+        newBlock.setUri(new BlockUri(definition.getUrn(), new Name(name)));
+        blocks.put(name, newBlock);
     }
 
-    @Override
-    public Set<String> getSectionNames() {
-        return NAMES;
-    }
+    //@Override
+    //public Set<String> getSectionNames() {
+    //    return NAMES;
+    //}
 }
