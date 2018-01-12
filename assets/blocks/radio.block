@@ -1,0 +1,61 @@
+{
+    "displayName": "Radio",
+    "tiles": {
+        "all": "radio_side",
+        "front": "radio_off"
+    },
+    "entity": {
+        "prefab": "InternetRadio:radio"
+    },
+
+    "rotation": "radio",
+
+    "false;FRONT": {
+        "tiles": {
+            "all": "radio_side",
+            "front": "radio_off"
+        }
+    },
+    "false;RIGHT": {
+        "tiles": {
+            "all": "radio_side",
+            "right": "radio_off"
+        }
+    },
+    "false;BACK": {
+        "tiles": {
+            "all": "radio_side",
+            "back": "radio_off"
+        }
+    },
+    "false;LEFT": {
+        "tiles": {
+            "all": "radio_side",
+            "left": "radio_off"
+        }
+    },
+    "true;FRONT": {
+        "tiles": {
+            "all": "radio_side",
+            "front": "radio_on"
+        }
+    },
+    "true;RIGHT": {
+        "tiles": {
+            "all": "radio_side",
+            "right": "radio_on"
+        }
+    },
+    "true;BACK": {
+        "tiles": {
+            "all": "radio_side",
+            "back": "radio_on"
+        }
+    },
+    "true;LEFT": {
+        "tiles": {
+            "all": "radio_side",
+            "left": "radio_n"
+        }
+    }
+}
