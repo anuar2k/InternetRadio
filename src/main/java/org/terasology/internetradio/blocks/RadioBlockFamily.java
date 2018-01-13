@@ -1,35 +1,38 @@
 package org.terasology.internetradio.blocks;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.terasology.math.Rotation;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.naming.Name;
-import org.terasology.world.BlockEntityRegistry;
-import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
+import org.terasology.world.block.BlockBuilderHelper;
 import org.terasology.world.block.BlockUri;
 import org.terasology.world.block.family.AbstractBlockFamily;
+import org.terasology.world.block.family.BlockSections;
+import org.terasology.world.block.family.RegisterBlockFamily;
+import org.terasology.world.block.loader.BlockFamilyDefinition;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+@RegisterBlockFamily("radio")
+@BlockSections({"off", "on"})
 public class RadioBlockFamily extends AbstractBlockFamily {
-    private Block archetypeBlock;
-    private Map<String, Block> blocks;
+    HashMap<String, Block> blocks = new HashMap<>();
 
-    public RadioBlockFamily(BlockUri familyUri, Block archetypeBlock, HashMap<String, Block> blocks, List<String> categories) {
-        super(familyUri, categories);
-        blocks.forEach((key, value) -> {
-            value.setBlockFamily(this);
-        });
-        this.archetypeBlock = archetypeBlock;
-        this.blocks = blocks;
+    public RadioBlockFamily(BlockFamilyDefinition definition, BlockBuilderHelper helper) {
+        super(definition, helper);
+        super.setBlockUri(new BlockUri(definition.getUrn()));
+        super.setCategory(definition.getCategories());
+
+        for (Rotation rot : Rotation.horizontalRotations()) {
+            Side side = rot.rotate(Side.FRONT);
+            createBlock(blocks, definition, helper, "off", side, rot);
+            createBlock(blocks, definition, helper, "on", side, rot);
+        }
     }
 
     @Override
-    public Block getBlockForPlacement(WorldProvider worldProvider, BlockEntityRegistry blockEntityRegistry, Vector3i location, Side attachmentSide, Side direction) {
+    public Block getBlockForPlacement(Vector3i location, Side attachmentSide, Side direction) {
         if (attachmentSide.isHorizontal()) {
             return blocks.get("off;"+attachmentSide);
         }
@@ -48,7 +51,7 @@ public class RadioBlockFamily extends AbstractBlockFamily {
 
     @Override
     public Block getArchetypeBlock() {
-        return archetypeBlock;
+        return blocks.get("off;FRONT");
     }
 
     @Override
@@ -59,5 +62,14 @@ public class RadioBlockFamily extends AbstractBlockFamily {
     @Override
     public Iterable<Block> getBlocks() {
         return blocks.values();
+    }
+
+    private void createBlock(HashMap<String, Block> blocks, BlockFamilyDefinition definition, BlockBuilderHelper helper, String section, Side side, Rotation rot) {
+        Block newBlock = helper.constructTransformedBlock(definition, section, rot);
+
+        String name = section+';'+side.toString();
+        newBlock.setUri(new BlockUri(definition.getUrn(), new Name(name)));
+        newBlock.setBlockFamily(this);
+        blocks.put(name, newBlock);
     }
 }

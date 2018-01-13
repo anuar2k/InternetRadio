@@ -9,7 +9,7 @@
         "prefab": "InternetRadio:radio"
     },
 
-    "rotation": "radio",
+    "family": "radio",
     "off": {
         "tiles": {
             "all": "radio_side",
